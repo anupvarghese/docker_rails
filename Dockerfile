@@ -1,6 +1,6 @@
 # Dockerfile
 
-FROM phusion/passenger-ruby22
+FROM phusion/passenger-ruby22:latest
 MAINTAINER Anoop "anupvarghese@gmail.com"
 
 # Set correct environment variables.
