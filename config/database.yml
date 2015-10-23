@@ -13,8 +13,6 @@ default: &default
   adapter: mysql2
   encoding: utf8
   pool: 5
-  username: root
-  password: goodpack
   socket: /tmp/mysql.sock
 
 development:
@@ -30,7 +28,12 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: SampleApp_test
+  database: <%= ENV['APP_QA_DB_DATABASE'] %>
+  host: <%= ENV['APP_QA_DB_HOST'] %>
+  port: <%= ENV['APP_QA_DB_PORT'] %>
+  username: <%= ENV['APP_QA_DB_USERNAME'] %>
+  password: <%= ENV['APP_QA_DB_PASSWORD'] %>
+
 
 # As with config/secrets.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
@@ -53,6 +56,8 @@ test:
 #
 production:
   <<: *default
-  database: SampleApp_production
-  username: SampleApp
-  password: <%= ENV['SAMPLEAPP_DATABASE_PASSWORD'] %>
+  database: <%= ENV['APP_PROD_DB_DATABASE'] %>
+  host: <%= ENV['APP_PROD_DB_HOST'] %>
+  port: <%= ENV['APP_PROD_DB_PORT'] %>
+  username: <%= ENV['APP_PROD_DB_USERNAME'] %>
+  password: <%= ENV['APP_PROD_DB_PASSWORD'] %>
