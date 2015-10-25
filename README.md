@@ -1,3 +1,104 @@
+## Testing setup
+
+1. Add below in gem file
+
+```
+gem 'minitest-rails' #for unit and integration tests
+
+group :test do
+  gem 'minitest-rails-capybara' #for functional tests
+  gem 'ZenTest', '~> 4.11'
+  gem 'minitest-reporters'
+  gem 'autotest-rails'
+end
+```
+
+2. Modify application.rb File
+
+Spec true means following the spec style
+Fixture true means to use fixtures
+
+```
+config.generators do |g|
+  g.test_framework :minitest, spec: true, fixture: true
+end
+```
+
+3. Add following in test_helper.rb
+
+```
+require 'minitest/spec'
+require 'minitest/rails/capybara'
+require 'minitest/reporters'
+require 'minitest/autorun'
+
+# For proper formating of tests
+
+module Minitest
+  module Reporters
+    class MetaboardTestReporter < DefaultReporter
+      GREEN = '1;32'
+      RED = '1;31'
+
+      def color_up(string, color)
+        color? ? "\e\[#{ color }m#{ string }#{ ANSI::Code::ENDCODE }" : string
+      end
+
+      def red(string)
+        color_up(string, RED)
+      end
+
+      def green(string)
+        color_up(string, GREEN)
+      end
+    end
+  end
+end
+
+
+reporter_options = { color: true, slow_count: 5 }
+
+Minitest::Reporters.use! [Minitest::Reporters::MetaboardTestReporter.new(reporter_options)]
+
+class ActiveSupport::TestCase
+  ActiveRecord::Migration.check_pending!
+  # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
+  fixtures :all
+  # Add more helper methods to be used by all tests here...
+  extend MiniTest::Spec::DSL
+
+  register_spec_type self do |desc|
+    desc < ActiveRecord::Base if desc.is_a? Class
+  end
+
+end
+```
+
+4. Add autorun.rb as follows
+
+```
+require 'autotest/restart'
+require "autotest/spec"
+
+Autotest.add_hook :initialize do |at|
+  at.testlib = "minitest-rails/autorun"
+end
+
+Autotest.add_hook :all_good do |at|
+  system "rake rcov_info"
+end if ENV['RCOV']
+```
+
+5. Run tests as follows
+
+`rake test`
+
+6. Run tests with autotest
+
+`bundle exec autotest`
+
+
+
 # Steps for setting up Docker (Development environment)
 
 ### 1. For development environment, use the below `Dockerfile`

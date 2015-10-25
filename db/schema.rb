@@ -11,13 +11,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151021144055) do
+ActiveRecord::Schema.define(version: 20151025043157) do
 
-  create_table "high_scores", force: :cascade do |t|
-    t.string   "game",       limit: 255
-    t.integer  "score",      limit: 4
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+  create_table "users", force: :cascade do |t|
+    t.text     "name",       limit: 65535
+    t.text     "email",      limit: 65535
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
   end
 
 end
